@@ -1,4 +1,9 @@
-# CLAUDE.md — EDusik (notes & blog)
+---
+description: EDusik blog — repo context, Next/content/i18n rules, and change principles (parity with CLAUDE.md)
+alwaysApply: true
+---
+
+# EDusik — notes & blog (project guidance)
 
 Guidance for humans and assistants working **in this repository**: EDusik’s personal site with Next.js (App Router), Markdown posts, and language-based routing. It complements [README.md](README.md); longer setup, ENV, and deploy details live there.
 
