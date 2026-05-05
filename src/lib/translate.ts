@@ -10,7 +10,10 @@ function mymemoryCode(loc: Locale): string {
 }
 
 function cacheKey(from: Locale, to: Locale, text: string): string {
-  return crypto.createHash("sha256").update(`${from}\0${to}\0${text}`, "utf8").digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(`${from}\0${to}\0${text}`, "utf8")
+    .digest("hex");
 }
 
 function readCache(key: string): string | undefined {
@@ -42,7 +45,10 @@ function chunkText(text: string, maxLen: number): string[] {
     let end = Math.min(i + maxLen, text.length);
     if (end < text.length) {
       const slice = text.slice(i, end);
-      const lastBreak = Math.max(slice.lastIndexOf("\n\n"), slice.lastIndexOf(". "));
+      const lastBreak = Math.max(
+        slice.lastIndexOf("\n\n"),
+        slice.lastIndexOf(". "),
+      );
       if (lastBreak > maxLen * 0.3) end = i + lastBreak + 1;
     }
     parts.push(text.slice(i, end).trim());
@@ -67,12 +73,18 @@ async function translateMyMemoryChunk(
     responseStatus?: number;
   };
   const out = data.responseData?.translatedText;
-  if (typeof out !== "string" || !out) throw new Error("MyMemory: empty response");
-  if (data.responseStatus === 403 || /MYMEMORY/.test(out)) throw new Error("MyMemory quota");
+  if (typeof out !== "string" || !out)
+    throw new Error("MyMemory: empty response");
+  if (data.responseStatus === 403 || /MYMEMORY/.test(out))
+    throw new Error("MyMemory quota");
   return out;
 }
 
-async function translateWithMyMemory(text: string, from: Locale, to: Locale): Promise<string> {
+async function translateWithMyMemory(
+  text: string,
+  from: Locale,
+  to: Locale,
+): Promise<string> {
   if (from === to || !text.trim()) return text;
   const key = cacheKey(from, to, text);
   const hit = readCache(key);
@@ -95,7 +107,11 @@ async function translateWithMyMemory(text: string, from: Locale, to: Locale): Pr
   return joined;
 }
 
-async function translateWithOpenAI(text: string, from: Locale, to: Locale): Promise<string> {
+async function translateWithOpenAI(
+  text: string,
+  from: Locale,
+  to: Locale,
+): Promise<string> {
   const key = process.env.OPENAI_API_KEY;
   if (!key) throw new Error("OPENAI_API_KEY missing");
   const target = to === "pt-BR" ? "Brazilian Portuguese" : "English";

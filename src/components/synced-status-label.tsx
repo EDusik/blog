@@ -55,7 +55,7 @@ export function SyncedStatusLabel({
   const [quality, setQuality] = useState<Quality>("pending");
 
   useEffect(() => {
-    setQuality(readQuality());
+    queueMicrotask(() => setQuality(readQuality()));
 
     const refresh = () => setQuality(readQuality());
 

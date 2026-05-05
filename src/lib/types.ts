@@ -11,6 +11,20 @@ export type Post = PostSummary & {
   bodyMarkdown: string;
 };
 
+/** Plain strings only — safe to pass Server → Client Component. */
+export type PostArticleClientUi = {
+  recent: string;
+  formattedDate: string;
+  readingTime: string;
+  listenSpeedLabel: string;
+  listenToggleAria: string;
+  listenPauseAria: string;
+  listenResumeAria: string;
+  /** `{{time}}` is replaced with formatted mm:ss */
+  listenEtaAria: string;
+  listenEtaApprox: string;
+};
+
 export type NetworkQuality = "pending" | "offline" | "good" | "medium" | "bad";
 
 export type UiStrings = {
@@ -23,6 +37,12 @@ export type UiStrings = {
   filterBy: string;
   clear: string;
   clearFilterAria: string;
+  listenSpeedLabel: string;
+  listenToggleAria: (title: string) => string;
+  listenPauseAria: string;
+  listenResumeAria: string;
+  listenEtaAria: string;
+  listenEtaApprox: string;
   skipToContent: string;
   searchResultsNav: string;
   tagFilterAria: (tag: string) => string;

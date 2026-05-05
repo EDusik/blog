@@ -65,7 +65,21 @@ export default async function PostPage({ params }: PageProps) {
   return (
     <>
       <PostArticleJsonLd post={post} lang={lang} />
-      <PostDetail post={post} lang={lang} ui={t.ui} />
+      <PostDetail
+        post={post}
+        lang={lang}
+        ui={{
+          recent: t.ui.recent,
+          formattedDate: t.ui.date(post.date),
+          readingTime: t.ui.readingTime,
+          listenSpeedLabel: t.ui.listenSpeedLabel,
+          listenEtaAria: t.ui.listenEtaAria,
+          listenEtaApprox: t.ui.listenEtaApprox,
+          listenToggleAria: t.ui.listenToggleAria(post.title),
+          listenPauseAria: t.ui.listenPauseAria,
+          listenResumeAria: t.ui.listenResumeAria,
+        }}
+      />
     </>
   );
 }

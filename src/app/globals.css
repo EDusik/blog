@@ -137,6 +137,13 @@
 
   /* effects */
   --blur-backdrop: 4px;
+
+  /* Obsidian ribbon–style icon hit (flat, circular, hover wash) */
+  --listen-hit: 38px;
+  --listen-obsidian-hover: color-mix(in oklch, var(--text) 11%, transparent);
+  --listen-obsidian-press: color-mix(in oklch, var(--text) 18%, transparent);
+  --listen-obsidian-playing-bg: color-mix(in oklch, var(--accent-2) 14%, transparent);
+  --listen-obsidian-playing-hover: color-mix(in oklch, var(--accent-2) 22%, transparent);
 }
 
 * { box-sizing: border-box; }
@@ -451,7 +458,6 @@ a { color: inherit; text-decoration: none; }
   transition: color var(--ease-ui), border-color var(--ease-ui), background var(--ease-ui);
   letter-spacing: var(--track-tag);
 }
-.tag::before { content: '#'; color: var(--text-mute); margin-right: var(--space-px); }
 .tag:hover {
   color: var(--accent-2);
   border-color: var(--accent-2-border-muted);
@@ -464,6 +470,15 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ------- post detail ------- */
+.post-detail-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-10);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-16);
+}
+
 .back-link {
   font-family: var(--mono);
   font-size: var(--fs-sm);
@@ -472,12 +487,92 @@ a { color: inherit; text-decoration: none; }
   display: inline-flex;
   align-items: center;
   gap: var(--space-6);
-  margin-bottom: var(--space-16);
   transition: color var(--ease-ui);
 }
 .back-link:hover { color: var(--accent); }
 .back-link .arrow { transition: transform var(--ease-ui); display: inline-block; }
 .back-link:hover .arrow { transform: translateX(calc(-1 * var(--space-2))); }
+
+.listen-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-10);
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  color: var(--text-mute);
+}
+
+.listen-toggle {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--text-mute);
+  border-radius: 50%;
+  width: var(--listen-hit);
+  height: var(--listen-hit);
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    color var(--ease-ui),
+    background var(--ease-ui),
+    box-shadow var(--ease-ui),
+    transform 80ms ease;
+}
+.listen-toggle:hover {
+  color: var(--text-dim);
+  background: var(--listen-obsidian-hover);
+}
+.listen-toggle:active {
+  background: var(--listen-obsidian-press);
+  transform: scale(0.96);
+}
+.listen-toggle:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--bg),
+    0 0 0 4px oklch(0.72 0.14 300 / 0.45);
+}
+
+/* Estado “playing” — leve halo em accent-2, no estilo ativo Obsidian */
+.listen-toggle[data-playing="true"] {
+  color: var(--accent-2);
+  background: var(--listen-obsidian-playing-bg);
+}
+.listen-toggle[data-playing="true"]:hover {
+  color: oklch(0.84 0.13 162);
+  background: var(--listen-obsidian-playing-hover);
+}
+
+.listen-speed {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-7);
+}
+.listen-speed-label { color: var(--text-mute); opacity: 0.9; }
+.listen-speed input[type="range"] {
+  width: 88px;
+  max-width: 100%;
+  accent-color: var(--accent);
+}
+.listen-speed-value {
+  min-width: 52px;
+  text-align: right;
+  color: var(--text-mute);
+  opacity: 0.85;
+}
+
+.listen-eta {
+  color: var(--text-mute);
+  opacity: 0.9;
+  white-space: nowrap;
+}
+.listen-eta-approx {
+  opacity: 0.75;
+}
 
 .post-detail h1 {
   font-family: var(--mono);

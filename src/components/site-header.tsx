@@ -51,7 +51,7 @@ export function SiteHeader({
   useEffect(() => {
     if (prevPathname.current === pathname) return;
     prevPathname.current = pathname;
-    if (searchOpen) setSearchClosed();
+    if (searchOpen) queueMicrotask(setSearchClosed);
   }, [pathname, searchOpen, setSearchClosed]);
 
   useEffect(() => {

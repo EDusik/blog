@@ -58,7 +58,7 @@ export function Feed({ lang, posts }: Props) {
       {activeTag && displayActiveTag ? (
         <div className="filter-bar" role="status">
           <span>{t.ui.filterBy}</span>
-          <span className="current-tag">#{displayActiveTag}</span>
+          <span className="current-tag">{displayActiveTag}</span>
           <button
             type="button"
             className="clear"
