@@ -149,7 +149,7 @@ export function SiteSearchModal({
   }, [open, onClose, getFocusable]);
 
   useEffect(() => {
-    if (!open) setQuery("");
+    if (!open) queueMicrotask(() => setQuery(""));
   }, [open]);
 
   if (!open) return null;
