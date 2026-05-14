@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { NetworkQuality } from "@/lib/types";
+import type { NetworkQuality } from "@/types";
 
 type Quality = NetworkQuality;
 
@@ -13,8 +13,7 @@ type NetworkConnection = {
 };
 
 function getNetworkConnection(): NetworkConnection | undefined {
-  return (navigator as Navigator & { connection?: NetworkConnection })
-    .connection;
+  return (navigator as Navigator & { connection?: NetworkConnection }).connection;
 }
 
 function readQuality(): Quality {
@@ -55,7 +54,7 @@ export function SyncedStatusLabel({
   const [quality, setQuality] = useState<Quality>("pending");
 
   useEffect(() => {
-    setQuality(readQuality());
+    queueMicrotask(() => setQuality(readQuality()));
 
     const refresh = () => setQuality(readQuality());
 

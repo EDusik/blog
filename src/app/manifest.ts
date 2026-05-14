@@ -2,14 +2,14 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "EDusik · notas",
+    name: "EDusik · notes",
     short_name: "EDusik",
-    description: "Notas sobre código, ferramentas e hábitos",
-    start_url: "/pt-BR",
+    description: "Notes on code, tools, and habits",
+    start_url: "/en",
     display: "standalone",
     background_color: "#0f0f14",
     theme_color: "#0f0f14",
-    lang: "pt-BR",
+    lang: "en",
     icons: [
       {
         src: "/icon-192x192.png",

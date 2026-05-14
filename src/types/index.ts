@@ -34,6 +34,7 @@ export type UiStrings = {
   searchPlaceholder: string;
   searchNoResults: string;
   searchClose: string;
+  syncedLabel: string;
   date: (iso: string) => string;
   noteCount: (n: number) => string;
 };

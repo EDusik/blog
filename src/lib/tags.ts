@@ -1,4 +1,3 @@
-/** Chave normalizada para comparar labels de tag (case-insensitive). */
 export function tagKey(s: string): string {
   return s.trim().toLowerCase();
 }
@@ -14,12 +13,10 @@ function addIfNew(seen: Set<string>, label: string, out: string[]): void {
   out.push(label.trim());
 }
 
-/** Remove blocos ``` para não contar `#` ou `[[]]` dentro de exemplos de código. */
 export function stripFencedCodeBlocks(markdown: string): string {
   return markdown.replace(/```[\s\S]*?```/g, "\n");
 }
 
-/** Remove linhas de heading ATX para que `# título` não vire hashtag. */
 export function stripAtxHeadingLines(markdown: string): string {
   return markdown.replace(/^\s{0,3}#{1,6}\s+.*$/gm, "\n");
 }
@@ -47,11 +44,10 @@ function hashTagHits(markdown: string): TagHit[] {
   return hits;
 }
 
-/**
- * Tags do frontmatter primeiro; em seguida, labels do corpo na ordem de aparição
- * (`[[wikilinks]]` e hashtags estilo `#tag`, sem duplicar por case).
- */
-export function mergePostTags(frontmatterTags: string[], bodyMarkdown: string): string[] {
+export function mergePostTags(
+  frontmatterTags: string[],
+  bodyMarkdown: string
+): string[] {
   const seen = new Set<string>();
   const out: string[] = [];
   for (const t of frontmatterTags) {

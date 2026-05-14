@@ -3,7 +3,6 @@
 import { useLayoutEffect } from "react";
 import { usePostTitle } from "./post-title-context";
 
-/** Sincroniza o título do post com o header (brand tagline). */
 export function PostTitleSetter({ title }: { title: string }) {
   const { setPostTitle } = usePostTitle();
   useLayoutEffect(() => {

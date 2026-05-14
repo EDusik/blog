@@ -1,6 +1,6 @@
-import type { NetworkQuality } from "@/lib/types";
-import { GithubIcon, LinkedInIcon } from "./icons";
-import { SyncedStatusLabel } from "./synced-status-label";
+import type { NetworkQuality } from "@/types";
+import { GithubIcon, LinkedInIcon } from "@/components/ui/icons";
+import { SyncedStatusLabel } from "@/components/ui/synced-status-label";
 
 type Props = {
   footer: string;
@@ -37,10 +37,7 @@ export function SiteFooter({ footer, syncedLabel, networkStatus }: Props) {
         <span className="site-footer-middle" aria-hidden="true" />
       )}
       <div className="site-footer-right">
-        <SyncedStatusLabel
-          syncedLabel={syncedLabel}
-          networkStatus={networkStatus}
-        />
+        <SyncedStatusLabel syncedLabel={syncedLabel} networkStatus={networkStatus} />
       </div>
     </footer>
   );

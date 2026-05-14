@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { ServiceWorkerRegister } from "@/components/service-worker-register";
+import { ServiceWorkerRegister } from "@/components/layout/service-worker-register";
 import { getMetadataBase } from "@/lib/site-url";
 import "./globals.css";
 
-const defaultTitle = "EDusik — notas e blog · Eduardo Dusik";
+const defaultTitle = "EDusik — notes and blog · Eduardo Dusik";
 const defaultDescription =
-  "Blog e notas de Eduardo Dusik, desenvolvedor front-end e engineer: código, ferramentas e hábitos. Developer notes.";
+  "Notes and blog by Eduardo Dusik, front-end developer and engineer: code, tools, and habits.";
 
 export const metadata: Metadata = {
   metadataBase: getMetadataBase(),
@@ -17,11 +17,9 @@ export const metadata: Metadata = {
   description: defaultDescription,
   robots: { index: true, follow: true },
   keywords: [
-    "notas",
     "blog",
     "Eduardo Dusik",
     "EDusik",
-    "desenvolvedor",
     "developer",
     "front-end",
     "frontend",
@@ -34,7 +32,7 @@ export const metadata: Metadata = {
   creator: "Eduardo Dusik",
   openGraph: {
     type: "website",
-    locale: "pt_BR",
+    locale: "en_US",
     siteName: "EDusik",
     title: defaultTitle,
     description: defaultDescription,
@@ -52,7 +50,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -60,7 +58,6 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font -- mono stack + tweak options match legacy Google bundle */}
         <link
           href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Geist+Mono:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
           rel="stylesheet"

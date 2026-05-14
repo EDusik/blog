@@ -1,11 +1,10 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getDictionary } from "@/lib/dictionary";
 import type { Locale } from "@/lib/locales";
 import { tagEquals } from "@/lib/tags";
-import type { PostSummary } from "@/lib/types";
+import type { PostSummary } from "@/types";
 import { PostCard } from "./post-card";
 
 type Props = {
@@ -19,34 +18,31 @@ export function Feed({ lang, posts }: Props) {
   const router = useRouter();
   const activeTag = searchParams.get("tag");
 
-  const displayActiveTag = useMemo(() => {
-    if (!activeTag) return null;
+  let displayActiveTag: string | null = null;
+  if (activeTag) {
     for (const p of posts) {
-      const hit = p.tags.find((t) => tagEquals(t, activeTag));
-      if (hit) return hit;
+      const hit = p.tags.find((tag) => tagEquals(tag, activeTag));
+      if (hit) {
+        displayActiveTag = hit;
+        break;
+      }
     }
-    return activeTag;
-  }, [activeTag, posts]);
+    if (displayActiveTag === null) displayActiveTag = activeTag;
+  }
 
-  const filtered = useMemo(() => {
-    if (!activeTag) return posts;
-    return posts.filter((p) => p.tags.some((t) => tagEquals(t, activeTag)));
-  }, [activeTag, posts]);
+  const filtered = !activeTag
+    ? posts
+    : posts.filter((p) => p.tags.some((tag) => tagEquals(tag, activeTag)));
 
-  const handleTagClick = useCallback(
-    (tag: string) => {
-      const next = activeTag && tagEquals(activeTag, tag) ? null : tag;
-      const url = next
-        ? `/${lang}?tag=${encodeURIComponent(next)}`
-        : `/${lang}`;
-      router.replace(url, { scroll: false });
-    },
-    [activeTag, lang, router],
-  );
+  function handleTagClick(tag: string) {
+    const next = activeTag && tagEquals(activeTag, tag) ? null : tag;
+    const url = next ? `/${lang}?tag=${encodeURIComponent(next)}` : `/${lang}`;
+    router.replace(url, { scroll: false });
+  }
 
-  const clearTag = useCallback(() => {
+  function clearTag() {
     router.replace(`/${lang}`, { scroll: false });
-  }, [lang, router]);
+  }
 
   return (
     <div>

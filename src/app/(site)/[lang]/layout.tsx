@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
-import { HtmlLang } from "@/components/html-lang";
-import { SiteFooter } from "@/components/site-footer";
-import { PostTitleProvider } from "@/components/post-title-context";
-import { SiteHeader } from "@/components/site-header";
-import { TweaksHost } from "@/components/tweaks-host";
+import { HtmlLang } from "@/components/layout/html-lang";
+import { SiteFooter } from "@/components/layout/site-footer";
+import { PostTitleProvider } from "@/components/post/post-title-context";
+import { SiteHeader } from "@/components/layout/site-header";
+import { TweaksHost } from "@/components/layout/tweaks-host";
 import { getPosts } from "@/lib/content/load-posts";
 import { getDictionary } from "@/lib/dictionary";
 import { isLocale, type Locale } from "@/lib/locales";
-import type { PostSummary } from "@/lib/types";
+import type { PostSummary } from "@/types";
 
 export default async function LangLayout({
   children,
@@ -20,7 +20,6 @@ export default async function LangLayout({
   if (!isLocale(raw)) notFound();
   const lang = raw as Locale;
   const t = getDictionary(lang);
-  const syncedLabel = lang === "pt-BR" ? "sincronizado" : "synced";
   const full = await getPosts(lang);
   const postsForSearch: PostSummary[] = full.map(
     ({ id, date, minutes, tags, title, excerpt }) => ({
@@ -30,7 +29,7 @@ export default async function LangLayout({
       tags,
       title,
       excerpt,
-    }),
+    })
   );
 
   return (
@@ -59,7 +58,7 @@ export default async function LangLayout({
         </PostTitleProvider>
         <SiteFooter
           footer={t.ui.footer}
-          syncedLabel={syncedLabel}
+          syncedLabel={t.ui.syncedLabel}
           networkStatus={t.ui.networkStatus}
         />
       </div>

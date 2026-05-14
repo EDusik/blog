@@ -10,7 +10,10 @@ function mymemoryCode(loc: Locale): string {
 }
 
 function cacheKey(from: Locale, to: Locale, text: string): string {
-  return crypto.createHash("sha256").update(`${from}\0${to}\0${text}`, "utf8").digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(`${from}\0${to}\0${text}`, "utf8")
+    .digest("hex");
 }
 
 function readCache(key: string): string | undefined {
@@ -28,12 +31,9 @@ function writeCache(key: string, value: string): void {
     fs.mkdirSync(CACHE_DIR, { recursive: true });
     const p = path.join(CACHE_DIR, `${key}.txt`);
     fs.writeFileSync(p, value, "utf8");
-  } catch {
-    // ignore cache write failures
-  }
+  } catch {}
 }
 
-/** Chunks that stay under typical URL limits for MyMemory GET. */
 function chunkText(text: string, maxLen: number): string[] {
   if (text.length <= maxLen) return [text];
   const parts: string[] = [];
@@ -54,7 +54,7 @@ function chunkText(text: string, maxLen: number): string[] {
 async function translateMyMemoryChunk(
   q: string,
   from: Locale,
-  to: Locale,
+  to: Locale
 ): Promise<string> {
   const fromC = mymemoryCode(from);
   const toC = mymemoryCode(to);
@@ -68,11 +68,16 @@ async function translateMyMemoryChunk(
   };
   const out = data.responseData?.translatedText;
   if (typeof out !== "string" || !out) throw new Error("MyMemory: empty response");
-  if (data.responseStatus === 403 || /MYMEMORY/.test(out)) throw new Error("MyMemory quota");
+  if (data.responseStatus === 403 || /MYMEMORY/.test(out))
+    throw new Error("MyMemory quota");
   return out;
 }
 
-async function translateWithMyMemory(text: string, from: Locale, to: Locale): Promise<string> {
+async function translateWithMyMemory(
+  text: string,
+  from: Locale,
+  to: Locale
+): Promise<string> {
   if (from === to || !text.trim()) return text;
   const key = cacheKey(from, to, text);
   const hit = readCache(key);
@@ -95,7 +100,11 @@ async function translateWithMyMemory(text: string, from: Locale, to: Locale): Pr
   return joined;
 }
 
-async function translateWithOpenAI(text: string, from: Locale, to: Locale): Promise<string> {
+async function translateWithOpenAI(
+  text: string,
+  from: Locale,
+  to: Locale
+): Promise<string> {
   const key = process.env.OPENAI_API_KEY;
   if (!key) throw new Error("OPENAI_API_KEY missing");
   const target = to === "pt-BR" ? "Brazilian Portuguese" : "English";
@@ -130,14 +139,10 @@ async function translateWithOpenAI(text: string, from: Locale, to: Locale): Prom
   return out;
 }
 
-/**
- * Traduz texto entre locales do site. Usa cache em disco (`.translate-cache`).
- * Se existir `OPENAI_API_KEY`, usa OpenAI; senão MyMemory (grátis, com limites).
- */
 export async function translateBetween(
   text: string,
   from: Locale,
-  to: Locale,
+  to: Locale
 ): Promise<string> {
   if (from === to || !text.trim()) return text;
   const diskKey = cacheKey(from, to, text);

@@ -1,6 +1,6 @@
 import { defaultLocale, locales, type Locale } from "@/lib/locales";
 import { getSiteUrlString } from "@/lib/site-url";
-import type { Post, PostSummary } from "@/lib/types";
+import type { Post, PostSummary } from "@/types";
 
 const MAX_KEYWORDS = 32;
 
@@ -18,7 +18,6 @@ export function absoluteUrl(path: string): string {
   return `${base}${p}`;
 }
 
-/** hreflang + x-default para a mesma nota em todos os idiomas do site. */
 export function alternateLanguagesForPost(id: string): Record<string, string> {
   const out: Record<string, string> = {};
   for (const l of locales) {
@@ -65,5 +64,5 @@ export function keywordsForHome(posts: PostSummary[]): string[] {
   for (const p of posts) {
     tagSet.push(...p.tags);
   }
-  return dedupeKeywords([...tagSet, "notas", "notes", "blog", "EDusik", "Eduardo Dusik"]);
+  return dedupeKeywords([...tagSet, "notes", "blog", "EDusik", "Eduardo Dusik"]);
 }

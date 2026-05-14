@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { PostArticleJsonLd } from "@/components/post-article-json-ld";
-import { PostDetail } from "@/components/post-detail";
+import { PostArticleJsonLd } from "@/components/post/post-article-json-ld";
+import { PostDetail } from "@/components/post/post-detail";
 import { getAllPostIds, getPost } from "@/lib/content/load-posts";
 import { getDictionary } from "@/lib/dictionary";
 import { isLocale, locales, type Locale } from "@/lib/locales";
@@ -16,9 +16,7 @@ export async function generateStaticParams() {
   return locales.flatMap((lang) => ids.map((id) => ({ lang, id })));
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { lang: raw, id } = await params;
   if (!isLocale(raw)) return {};
   const lang = raw as Locale;

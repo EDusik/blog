@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 
 type PostTitleContextValue = {
   postTitle: string | null;
@@ -17,14 +10,8 @@ type PostTitleContextValue = {
 const PostTitleContext = createContext<PostTitleContextValue | null>(null);
 
 export function PostTitleProvider({ children }: { children: ReactNode }) {
-  const [postTitle, setPostTitleState] = useState<string | null>(null);
-  const setPostTitle = useCallback((title: string | null) => {
-    setPostTitleState(title);
-  }, []);
-  const value = useMemo(
-    () => ({ postTitle, setPostTitle }),
-    [postTitle, setPostTitle],
-  );
+  const [postTitle, setPostTitle] = useState<string | null>(null);
+  const value = useMemo(() => ({ postTitle, setPostTitle }), [postTitle, setPostTitle]);
   return (
     <PostTitleContext.Provider value={value}>{children}</PostTitleContext.Provider>
   );

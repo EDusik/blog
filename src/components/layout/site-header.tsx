@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { SearchIcon } from "@/components/icons";
-import { SiteSearchModal } from "@/components/site-search-modal";
+import { SearchIcon } from "@/components/ui/icons";
+import { SiteSearchModal } from "@/components/ui/site-search-modal";
 import type { Locale } from "@/lib/locales";
 import { setLangCookieClient } from "@/lib/lang-cookie";
-import type { PostSummary } from "@/lib/types";
-import { usePostTitle } from "./post-title-context";
+import type { PostSummary } from "@/types";
+import { usePostTitle } from "@/components/post/post-title-context";
 
 type Props = {
   lang: Locale;
@@ -39,7 +39,6 @@ export function SiteHeader({
   const [searchOpen, setSearchOpen] = useState(false);
   const searchTriggerRef = useRef<HTMLButtonElement>(null);
 
-  const setSearchClosed = useCallback(() => setSearchOpen(false), []);
   const closeSearch = useCallback((reason: "dismiss" | "select") => {
     setSearchOpen(false);
     if (reason === "dismiss") {
@@ -51,8 +50,8 @@ export function SiteHeader({
   useEffect(() => {
     if (prevPathname.current === pathname) return;
     prevPathname.current = pathname;
-    if (searchOpen) setSearchClosed();
-  }, [pathname, searchOpen, setSearchClosed]);
+    if (searchOpen) queueMicrotask(() => setSearchOpen(false));
+  }, [pathname, searchOpen]);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -74,7 +73,9 @@ export function SiteHeader({
       setSearchOpen((wasOpen) => {
         if (wasOpen) {
           queueMicrotask(() => {
-            document.querySelector<HTMLInputElement>(".search-panel .search-input")?.focus();
+            document
+              .querySelector<HTMLInputElement>(".search-panel .search-input")
+              ?.focus();
           });
         }
         return true;
@@ -91,9 +92,7 @@ export function SiteHeader({
         <Link href={`/${lang}`} className="brand-name" prefetch>
           {siteTitle}
         </Link>
-        {postTitle ? (
-          <span className="brand-tagline">/ {postTitle}</span>
-        ) : null}
+        {postTitle ? <span className="brand-tagline">/ {postTitle}</span> : null}
       </div>
       <div className="header-tools">
         <div className="lang-toggle" role="group" aria-label={langLabel}>

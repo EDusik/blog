@@ -1,5 +1,5 @@
 import type { Locale } from "@/lib/locales";
-import type { Post } from "@/lib/types";
+import type { Post } from "@/types";
 import { absoluteUrl, postPath } from "@/lib/seo";
 
 type Props = {
@@ -7,9 +7,6 @@ type Props = {
   lang: Locale;
 };
 
-/**
- * Schema.org BlogPosting — ajuda buscadores a associar título, resumo, data e tags.
- */
 export function PostArticleJsonLd({ post, lang }: Props) {
   const url = absoluteUrl(postPath(lang, post.id));
   const payload = {

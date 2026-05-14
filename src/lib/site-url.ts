@@ -1,7 +1,3 @@
-/**
- * URL pública do site para canonical, OG, sitemap e JSON-LD.
- * Defina `NEXT_PUBLIC_SITE_URL` em produção (ex.: `https://edusik.com`).
- */
 export function getSiteUrlString(): string {
   const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (fromEnv) {

@@ -8,7 +8,11 @@ const components: Components = {
   h3: ({ children }) => <h3>{children}</h3>,
   blockquote: ({ children }) => <blockquote>{children}</blockquote>,
   a: ({ href, children }) => (
-    <a href={href} rel="noopener noreferrer" target={href?.startsWith("http") ? "_blank" : undefined}>
+    <a
+      href={href}
+      rel="noopener noreferrer"
+      target={href?.startsWith("http") ? "_blank" : undefined}
+    >
       {children}
     </a>
   ),

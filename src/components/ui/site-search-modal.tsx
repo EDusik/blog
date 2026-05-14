@@ -1,17 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Locale } from "@/lib/locales";
-import type { PostSummary } from "@/lib/types";
+import type { PostSummary } from "@/types";
 
 type Props = {
   open: boolean;
@@ -56,7 +48,7 @@ function highlightMatches(text: string, q: string): ReactNode {
     nodes.push(
       <mark className="search-highlight" key={`m-${key++}`}>
         {text.slice(at, at + nq.length)}
-      </mark>,
+      </mark>
     );
     from = at + nq.length;
   }
@@ -83,7 +75,7 @@ export function SiteSearchModal({
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
 
-  const q = useMemo(() => normalizeQuery(query), [query]);
+  const q = normalizeQuery(query);
 
   const rows = useMemo(() => {
     if (!q) return posts;
@@ -98,12 +90,6 @@ export function SiteSearchModal({
       });
     return scored.map((x) => x.post);
   }, [posts, q]);
-
-  const getFocusable = useCallback(() => {
-    const root = panelRef.current;
-    if (!root) return [];
-    return Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE));
-  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -129,7 +115,10 @@ export function SiteSearchModal({
         return;
       }
       if (e.key !== "Tab") return;
-      const list = getFocusable();
+      const root = panelRef.current;
+      const list = root
+        ? Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE))
+        : [];
       if (list.length === 0) return;
       const first = list[0];
       const last = list[list.length - 1];
@@ -146,10 +135,10 @@ export function SiteSearchModal({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose, getFocusable]);
+  }, [open, onClose]);
 
   useEffect(() => {
-    if (!open) setQuery("");
+    if (!open) queueMicrotask(() => setQuery(""));
   }, [open]);
 
   if (!open) return null;

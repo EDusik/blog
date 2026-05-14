@@ -1,17 +1,14 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Feed } from "@/components/feed";
+import { Feed } from "@/components/post/feed";
 import { getDictionary } from "@/lib/dictionary";
 import { getPosts } from "@/lib/content/load-posts";
 import { isLocale, type Locale } from "@/lib/locales";
 import { alternateLanguagesForHome, homePath, keywordsForHome } from "@/lib/seo";
-import type { PostSummary } from "@/lib/types";
+import type { PostSummary } from "@/types";
 
-const homeTagline: Record<Locale, string> = {
-  "pt-BR": "Notas sobre código, ferramentas e hábitos",
-  en: "Notes on code, tools, and habits",
-};
+const HOME_TAGLINE = "Notes on code, tools, and habits";
 
 export async function generateMetadata({
   params,
@@ -24,10 +21,10 @@ export async function generateMetadata({
   const posts = await getPosts(lang);
   const t = getDictionary(lang);
   const path = homePath(lang);
-  const desc = `${t.ui.noteCount(posts.length)} · ${homeTagline[lang]}`;
+  const desc = `${t.ui.noteCount(posts.length)} · ${HOME_TAGLINE}`;
   const ogLocale = lang === "pt-BR" ? "pt_BR" : "en_US";
   return {
-    title: lang === "pt-BR" ? "notas" : "notes",
+    title: "notes",
     description: desc,
     keywords: keywordsForHome(posts),
     alternates: {
@@ -72,14 +69,16 @@ export default async function LangHomePage({
   if (!isLocale(raw)) notFound();
   const lang = raw as Locale;
   const full = await getPosts(lang);
-  const posts: PostSummary[] = full.map(({ id, date, minutes, tags, title, excerpt }) => ({
-    id,
-    date,
-    minutes,
-    tags,
-    title,
-    excerpt,
-  }));
+  const posts: PostSummary[] = full.map(
+    ({ id, date, minutes, tags, title, excerpt }) => ({
+      id,
+      date,
+      minutes,
+      tags,
+      title,
+      excerpt,
+    })
+  );
 
   return (
     <Suspense fallback={<FeedFallback />}>

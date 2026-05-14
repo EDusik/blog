@@ -5,9 +5,8 @@ import { cache } from "react";
 import { translateBetween } from "@/lib/translate";
 import { getContentSourceLocale, isLocale, type Locale } from "@/lib/locales";
 import { mergePostTags } from "@/lib/tags";
-import type { Post } from "@/lib/types";
+import type { Post } from "@/types";
 
-/** Palavras por minuto para estimativa de leitura (corpo em Markdown). */
 const WORDS_PER_MINUTE = 200;
 
 type MatterData = {
@@ -16,23 +15,21 @@ type MatterData = {
   tags?: unknown;
   excerpt?: unknown;
   minutes?: unknown;
-  /** Idioma em que o texto foi escrito (`pt-BR` ou `en`), se diferente de `content/<contentSource>/`. */
   contentLang?: unknown;
 };
 
 function assertString(v: unknown, field: string, id: string): string {
   if (typeof v !== "string" || !v.trim()) {
     throw new Error(
-      `[content/${id}.md] Frontmatter inválido: "${field}" é obrigatório (string não vazia).`,
+      `[content/${id}.md] Invalid front matter: "${field}" is required (non-empty string).`
     );
   }
   return v.trim();
 }
 
-/** YAML pode interpretar datas como `Date` (UTC). */
 function dateToIsoUtc(d: Date): string {
   if (Number.isNaN(d.getTime())) {
-    throw new Error("[content] Data inválida derivada do arquivo ou do frontmatter.");
+    throw new Error("[content] Invalid date derived from the file or front matter.");
   }
   const y = d.getUTCFullYear();
   const m = String(d.getUTCMonth() + 1).padStart(2, "0");
@@ -40,11 +37,6 @@ function dateToIsoUtc(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
-/**
- * Data de publicação: `date` no frontmatter (string ou Date) ou timestamps do arquivo.
- * Sem `date`, usa `birthtime` do FS quando parece válido (> 1 dia após epoch), senão `mtime`.
- * Em CI ou imagens que recriam arquivos sem timestamps, isso pode refletir o build, não a escrita.
- */
 function resolveDate(v: unknown, filePath: string): string {
   if (v instanceof Date && !Number.isNaN(v.getTime())) {
     return dateToIsoUtc(v);
@@ -60,8 +52,16 @@ function resolveDate(v: unknown, filePath: string): string {
 
 function normalizeTags(tags: unknown): string[] {
   if (tags == null) return [];
-  if (Array.isArray(tags)) return tags.map(String).map((s) => s.trim()).filter(Boolean);
-  if (typeof tags === "string") return tags.split(/,\s*/).map((s) => s.trim()).filter(Boolean);
+  if (Array.isArray(tags))
+    return tags
+      .map(String)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  if (typeof tags === "string")
+    return tags
+      .split(/,\s*/)
+      .map((s) => s.trim())
+      .filter(Boolean);
   return [];
 }
 
@@ -107,7 +107,11 @@ function resolveWrittenLang(data: MatterData, fileLocale: Locale): Locale {
 
 type LoadedPost = { post: Post; writtenLang: Locale; fmTags: string[] };
 
-function readPostFromPath(filePath: string, id: string, fileLocale: Locale): LoadedPost | undefined {
+function readPostFromPath(
+  filePath: string,
+  id: string,
+  fileLocale: Locale
+): LoadedPost | undefined {
   if (!fs.existsSync(filePath)) return undefined;
   const raw = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(raw);
@@ -133,7 +137,7 @@ async function maybeTranslatePost(
   post: Post,
   fmTags: string[],
   from: Locale,
-  to: Locale,
+  to: Locale
 ): Promise<Post> {
   if (from === to) return post;
   try {
@@ -156,17 +160,19 @@ async function maybeTranslatePost(
   }
 }
 
-export const getPost = cache(async (locale: Locale, id: string): Promise<Post | undefined> => {
-  const source = getContentSourceLocale();
-  const filePath = path.join(process.cwd(), "content", source, `${id}.md`);
-  const loaded = readPostFromPath(filePath, id, source);
-  if (!loaded) return undefined;
+export const getPost = cache(
+  async (locale: Locale, id: string): Promise<Post | undefined> => {
+    const source = getContentSourceLocale();
+    const filePath = path.join(process.cwd(), "content", source, `${id}.md`);
+    const loaded = readPostFromPath(filePath, id, source);
+    if (!loaded) return undefined;
 
-  if (loaded.writtenLang !== locale) {
-    return maybeTranslatePost(loaded.post, loaded.fmTags, loaded.writtenLang, locale);
+    if (loaded.writtenLang !== locale) {
+      return maybeTranslatePost(loaded.post, loaded.fmTags, loaded.writtenLang, locale);
+    }
+    return loaded.post;
   }
-  return loaded.post;
-});
+);
 
 export async function getAllPostIds(): Promise<string[]> {
   const source = getContentSourceLocale();
