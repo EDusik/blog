@@ -1,7 +1,9 @@
 import Link from "next/link";
+
+import { ArrowBack } from "@/components/ui/icons";
 import type { Locale } from "@/lib/locales";
 import type { Post, UiStrings } from "@/types";
-import { ArrowBack } from "@/components/ui/icons";
+
 import { PostBodyMarkdown } from "./post-body-markdown";
 import { PostTitleSetter } from "./post-title-setter";
 

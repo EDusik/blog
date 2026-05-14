@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
+
 import { HtmlLang } from "@/components/layout/html-lang";
 import { SiteFooter } from "@/components/layout/site-footer";
-import { PostTitleProvider } from "@/components/post/post-title-context";
 import { SiteHeader } from "@/components/layout/site-header";
 import { TweaksHost } from "@/components/layout/tweaks-host";
+import { PostTitleProvider } from "@/components/post/post-title-context";
 import { getPosts } from "@/lib/content/load-posts";
 import { getDictionary } from "@/lib/dictionary";
 import { isLocale, type Locale } from "@/lib/locales";

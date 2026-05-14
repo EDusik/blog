@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+
 import type { Locale } from "@/lib/locales";
 import { tagEquals } from "@/lib/tags";
 import type { PostSummary, UiStrings } from "@/types";

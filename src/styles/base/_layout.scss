@@ -1,0 +1,44 @@
+@use '../mixins/responsive' as r;
+
+.shell {
+  position: relative;
+  max-width: var(--col);
+  margin: 0 auto;
+  padding: var(--space-shell-y-sm) var(--space-shell-x-sm) var(--space-shell-y-sm);
+
+  @include r.desktop {
+    padding: var(--space-shell-y) var(--space-shell-x) var(--space-shell-y);
+  }
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-10);
+  top: -100px;
+  z-index: calc(var(--z-search) + 1);
+  padding: var(--space-7) var(--space-9);
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--bg);
+  background: var(--accent);
+  border-radius: var(--r-sm);
+  text-decoration: none;
+  transition: top 0.12s ease;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  top: var(--space-10);
+  outline: var(--space-1) solid var(--accent-2);
+  outline-offset: var(--space-2);
+}
+
+#main-content:focus {
+  outline: none;
+}
+
+#main-content:focus-visible {
+  outline: var(--space-1) solid var(--accent);
+  outline-offset: var(--space-3);
+}

@@ -1,0 +1,11 @@
+// Aggregates co-located component partials so they ship as global CSS.
+// Each component's `.scss` lives next to its `.tsx` (kebab-case pair) and is
+// pulled in here — components themselves never import their own stylesheet.
+
+@use '../../components/layout/site-header';
+@use '../../components/layout/site-footer';
+@use '../../components/layout/tweaks-host';
+@use '../../components/post/feed';
+@use '../../components/post/post-card';
+@use '../../components/post/post-detail';
+@use '../../components/ui/site-search-modal';

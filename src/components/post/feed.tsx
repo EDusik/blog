@@ -1,10 +1,12 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+
 import { getDictionary } from "@/lib/dictionary";
 import type { Locale } from "@/lib/locales";
 import { tagEquals } from "@/lib/tags";
 import type { PostSummary } from "@/types";
+
 import { PostCard } from "./post-card";
 
 type Props = {

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+
 import type { Locale } from "@/lib/locales";
 import type { PostSummary } from "@/types";
 

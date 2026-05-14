@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import type { NetworkQuality } from "@/types";
 
 type Quality = NetworkQuality;

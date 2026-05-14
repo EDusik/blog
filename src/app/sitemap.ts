@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+
 import { getAllPostIds, getPost } from "@/lib/content/load-posts";
 import { defaultLocale } from "@/lib/locales";
 import {

@@ -1,0 +1,8 @@
+// SCSS variables (not custom properties) — used by @media queries
+// Mobile-first: $bp-* are the thresholds above which "desktop-ish" styles kick in.
+// $bp-md preserves the legacy 621px cutoff that lived in globals.css.
+
+$bp-sm: 480px;
+$bp-md: 621px;
+$bp-lg: 960px;
+$bp-xl: 1280px;

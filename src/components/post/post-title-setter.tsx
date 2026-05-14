@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect } from "react";
+
 import { usePostTitle } from "./post-title-context";
 
 export function PostTitleSetter({ title }: { title: string }) {

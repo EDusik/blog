@@ -1,0 +1,34 @@
+@use '../tokens/breakpoints' as bp;
+
+// Mobile-first helpers. Base styles target the narrowest viewport;
+// `desktop` (and friends) apply once we cross the matching breakpoint.
+
+@mixin desktop {
+  @media (min-width: bp.$bp-md) {
+    @content;
+  }
+}
+
+@mixin from-sm {
+  @media (min-width: bp.$bp-sm) {
+    @content;
+  }
+}
+
+@mixin from-md {
+  @media (min-width: bp.$bp-md) {
+    @content;
+  }
+}
+
+@mixin from-lg {
+  @media (min-width: bp.$bp-lg) {
+    @content;
+  }
+}
+
+@mixin from-xl {
+  @media (min-width: bp.$bp-xl) {
+    @content;
+  }
+}

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+
 import { ServiceWorkerRegister } from "@/components/layout/service-worker-register";
 import { getMetadataBase } from "@/lib/site-url";
-import "./globals.css";
+import "@/styles/globals.scss";
 
 const defaultTitle = "EDusik — notes and blog · Eduardo Dusik";
 const defaultDescription =

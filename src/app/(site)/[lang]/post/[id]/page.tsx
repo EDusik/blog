@@ -1,5 +1,6 @@
-import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+
 import { PostArticleJsonLd } from "@/components/post/post-article-json-ld";
 import { PostDetail } from "@/components/post/post-detail";
 import { getAllPostIds, getPost } from "@/lib/content/load-posts";

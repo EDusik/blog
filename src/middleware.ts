@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+
 import { LANG_COOKIE } from "./lib/lang-cookie";
 import { defaultLocale, isLocale } from "./lib/locales";
 

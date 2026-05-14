@@ -1,0 +1,17 @@
+// Single entry point — imported only from src/app/layout.tsx.
+// Pulls in design tokens (as CSS custom properties on :root), base resets and
+// layout primitives, then every co-located component partial.
+
+@use 'tokens/colors';
+@use 'tokens/typography';
+@use 'tokens/spacing';
+@use 'tokens/layout' as layout-tokens;
+@use 'tokens/radii';
+@use 'tokens/motion';
+@use 'tokens/elevation';
+@use 'tokens/effects';
+
+@use 'base/reset';
+@use 'base/layout';
+
+@use 'components/index';

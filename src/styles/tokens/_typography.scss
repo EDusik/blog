@@ -1,0 +1,39 @@
+:root {
+  /* families */
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* scale */
+  --fs-2xs: 10px;
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 13px;
+  --fs-code: 13.5px;
+  --fs-base: 14px;
+  --fs-body: 15px;
+  --fs-body-lg: 16px;
+  --fs-lg: 18px;
+  --fs-title-sm: 19px;
+  --fs-title: 22px;
+  --fs-h1: 24px;
+  --fs-display: 28px;
+
+  /* line-height */
+  --lh-solid: 1;
+  --lh-tight: 1.25;
+  --lh-snug: 1.3;
+  --lh-snug-plus: 1.45;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.65;
+  --lh-prose: 1.75;
+
+  /* letter-spacing */
+  --track-tight-lg: -0.02em;
+  --track-tight-md: -0.015em;
+  --track-tight-sm: -0.01em;
+  --track-mono: 0.02em;
+  --track-mono-wide: 0.04em;
+  --track-label: 0.06em;
+  --track-label-wide: 0.08em;
+  --track-tag: 0.01em;
+}

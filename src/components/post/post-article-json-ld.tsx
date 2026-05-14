@@ -1,6 +1,6 @@
 import type { Locale } from "@/lib/locales";
-import type { Post } from "@/types";
 import { absoluteUrl, postPath } from "@/lib/seo";
+import type { Post } from "@/types";
 
 type Props = {
   post: Post;

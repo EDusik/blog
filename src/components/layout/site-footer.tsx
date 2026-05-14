@@ -1,6 +1,6 @@
-import type { NetworkQuality } from "@/types";
 import { GithubIcon, LinkedInIcon } from "@/components/ui/icons";
 import { SyncedStatusLabel } from "@/components/ui/synced-status-label";
+import type { NetworkQuality } from "@/types";
 
 type Props = {
   footer: string;
