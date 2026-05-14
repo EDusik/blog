@@ -1,10 +1,11 @@
+import matter from "gray-matter";
 import fs from "node:fs";
 import path from "node:path";
-import matter from "gray-matter";
 import { cache } from "react";
-import { translateBetween } from "@/lib/translate";
+
 import { getContentSourceLocale, isLocale, type Locale } from "@/lib/locales";
 import { mergePostTags } from "@/lib/tags";
+import { translateBetween } from "@/lib/translate";
 import type { Post } from "@/types";
 
 const WORDS_PER_MINUTE = 200;
