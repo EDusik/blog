@@ -1,5 +1,5 @@
-const CACHE = "blog-offline-v2";
-/** Same-origin fetches cannot hang the tab indefinitely behind the SW. */
+const CACHE = "blog-offline-v3";
+/** Same-origin fetches cannot hang the tab indefinitely behind our SW handler. */
 const SW_FETCH_TIMEOUT_MS = 28_000;
 
 self.addEventListener("install", () => {
@@ -16,6 +16,10 @@ self.addEventListener("activate", (event) => {
       await self.clients.claim();
     })()
   );
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 function isSameOrigin(url) {
@@ -62,25 +66,29 @@ async function networkFirst(request, cache) {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
-  // Full navigations bypass the SW so a slow/hung server response is not stuck behind our handler.
   if (request.mode === "navigate") return;
 
   const url = new URL(request.url);
-  if (!isSameOrigin(url) && !isGoogleFontHost(url.hostname)) return;
 
-  event.respondWith(
-    (async () => {
-      const cache = await caches.open(CACHE);
-      if (url.pathname.startsWith("/_next/static")) {
+  if (isGoogleFontHost(url.hostname)) {
+    event.respondWith(
+      (async () => {
+        const cache = await caches.open(CACHE);
+        return networkFirst(request, cache);
+      })()
+    );
+    return;
+  }
+
+  if (isSameOrigin(url) && url.pathname.startsWith("/_next/static")) {
+    event.respondWith(
+      (async () => {
+        const cache = await caches.open(CACHE);
         return cacheFirst(request, cache);
-      }
-      if (isGoogleFontHost(url.hostname)) {
-        return networkFirst(request, cache);
-      }
-      if (isSameOrigin(url)) {
-        return networkFirst(request, cache);
-      }
-      return fetch(request);
-    })()
-  );
+      })()
+    );
+    return;
+  }
+
+  // Do not intercept RSC / same-origin document fetches — avoids stale App Router payloads after deploy.
 });
