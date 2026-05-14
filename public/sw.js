@@ -1,4 +1,6 @@
-const CACHE = "blog-offline-v1";
+const CACHE = "blog-offline-v2";
+/** Same-origin fetches cannot hang the tab indefinitely behind the SW. */
+const SW_FETCH_TIMEOUT_MS = 28_000;
 
 self.addEventListener("install", () => {
   self.skipWaiting();
@@ -24,21 +26,34 @@ function isGoogleFontHost(hostname) {
   return hostname === "fonts.googleapis.com" || hostname === "fonts.gstatic.com";
 }
 
+function fetchWithDeadline(request) {
+  if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
+    return fetch(request, { signal: AbortSignal.timeout(SW_FETCH_TIMEOUT_MS) });
+  }
+  return fetch(request);
+}
+
 async function cacheFirst(request, cache) {
   const hit = await cache.match(request);
   if (hit) return hit;
-  const res = await fetch(request);
-  if (res.ok) await cache.put(request, res.clone());
-  return res;
+  try {
+    const res = await fetchWithDeadline(request);
+    if (res.ok) await cache.put(request, res.clone());
+    return res;
+  } catch {
+    return Response.error();
+  }
 }
 
 async function networkFirst(request, cache) {
   try {
-    const res = await fetch(request);
+    const res = await fetchWithDeadline(request);
     if (res.ok) await cache.put(request, res.clone());
     return res;
   } catch {
-    const hit = await cache.match(request);
+    let hit = await cache.match(request);
+    if (hit) return hit;
+    hit = await cache.match(request.url);
     if (hit) return hit;
     return Response.error();
   }
@@ -47,6 +62,9 @@ async function networkFirst(request, cache) {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
+  // Full navigations bypass the SW so a slow/hung server response is not stuck behind our handler.
+  if (request.mode === "navigate") return;
+
   const url = new URL(request.url);
   if (!isSameOrigin(url) && !isGoogleFontHost(url.hostname)) return;
 
