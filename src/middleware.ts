@@ -8,7 +8,9 @@ export function middleware(request: NextRequest) {
   if (request.nextUrl.pathname === "/") {
     const cookie = request.cookies.get(LANG_COOKIE)?.value;
     const lang = cookie && isLocale(cookie) ? cookie : defaultLocale;
-    return NextResponse.redirect(new URL(`/${lang}`, request.url));
+    const res = NextResponse.redirect(new URL(`/${lang}`, request.url));
+    res.headers.set("Cache-Control", "no-store");
+    return res;
   }
   return NextResponse.next();
 }
