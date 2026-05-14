@@ -4,11 +4,16 @@ import path from "node:path";
 
 import type { Locale } from "@/lib/locales";
 
-const CACHE_DIR = process.env.VERCEL
-  ? "/tmp/.translate-cache"
-  : path.join(process.cwd(), ".translate-cache");
+function resolveTranslateCacheDir(): string {
+  const fromEnv = process.env.TRANSLATE_CACHE_DIR?.trim();
+  if (fromEnv) return fromEnv;
+  if (process.env.VERCEL) return "/tmp/.translate-cache";
+  return path.join(process.cwd(), ".translate-cache");
+}
 
-/** Per-request cap so layout/getPosts cannot hang on a stuck socket. */
+const CACHE_DIR = resolveTranslateCacheDir();
+
+/** Per-request cap so translation cannot hang on a stuck socket. */
 const MYMEMORY_FETCH_TIMEOUT_MS = 18_000;
 const OPENAI_FETCH_TIMEOUT_MS = 50_000;
 
