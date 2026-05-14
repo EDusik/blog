@@ -1,0 +1,150 @@
+---
+description: Padrões do EDusik blog — Next 16 App Router, TS/React, kebab-case por domínio, SCSS modular
+alwaysApply: true
+---
+
+# Project conventions — EDusik blog
+
+Padrões reais praticados no repositório. Complementa `CLAUDE.md` (princípios de
+mudança) e `README.md` (setup, ENV, deploy).
+
+## Stack
+
+- Next.js 16 (App Router), React 19, TypeScript 5.
+- ESLint 9 (`eslint-config-next`), Prettier 3.
+- Husky + lint-staged + commitlint (Conventional Commits).
+- Conteúdo Markdown em `content/<locale>/`; i18n `en` (default) / `pt-BR`.
+
+## Aliases e imports
+
+- `@/*` → `./src/*` (`tsconfig.json`).
+- **Sem barrels** em `src/components/*` — import direto pelo caminho do arquivo:
+  `import { SiteHeader } from "@/components/layout/site-header";`
+- Barrel é aceitável apenas onde já existe (`src/types/index.ts`).
+
+### Ordem em `.ts` / `.tsx`
+
+1. `"use client"` na 1ª linha quando aplicável.
+2. Externos (`react`, `next/*`, libs) — bloco; dentro do bloco, ordem
+   **alfabética pelo especificador do módulo** (ex.: `next` / `next/link` antes de
+   `react`), alinhada ao exemplo abaixo.
+3. `@/*` — bloco (ordem alfabética por path).
+4. Relativos `./xxx` — bloco.
+
+Blocos separados por linha em branco. `import type` fica junto do módulo
+correspondente (no mesmo grupo).
+
+```tsx
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+import { SearchIcon } from "@/components/ui/icons";
+import type { Locale } from "@/lib/locales";
+import type { PostSummary } from "@/types";
+
+import { PostCard } from "./post-card";
+```
+
+## Folder layout
+
+- `src/app/` — rotas (App Router), grupos como `(site)`, segmentos `[lang]`.
+- `src/components/<dominio>/` — kebab-case por **domínio**: `layout/`, `post/`, `ui/`.
+  - Dentro de cada domínio, arquivos kebab-case `.tsx` (e `.scss` quando houver).
+  - Sem subpastas PascalCase, sem feature-folders por página.
+- `src/lib/` — utilitários (i18n, content, seo, tradução…). Subpasta opcional por tema (`content/`).
+- `src/types/index.ts` — tipos compartilhados (`PostSummary`, `Post`, `Dictionary`, `UiStrings`, `NetworkQuality`).
+- `src/middleware.ts` — middleware do Next.
+- `src/styles/` — entry SCSS + tokens + base + mixins + índice de componentes.
+
+## File naming
+
+- Arquivos `.ts` / `.tsx` / `.scss`: **kebab-case** (`site-header.tsx`, `post-detail.scss`, `load-posts.ts`).
+- Diretórios de domínio: kebab-case (`layout`, `post`, `ui`, `content`).
+- Componentes exportados via **named export** em `PascalCase` (`export function SiteHeader`).
+- Tipos exportados em `PascalCase` (`PostSummary`, `Locale`).
+
+## Components e `"use client"`
+
+- Server Components por padrão.
+- `"use client"` apenas quando o arquivo usa estado/efeito, handler, ou browser API.
+- Diretiva na **1ª linha** do arquivo.
+
+## Types
+
+- Tipos de domínio compartilhados: `src/types/index.ts`.
+- Tipos locais (props, helpers): declarados no próprio arquivo, geralmente como
+  `type Props = { … }` logo acima do componente.
+- Preferir `type` a `interface` (consistente com o repo).
+- Reusar `Pick<UiStrings, "…">` quando um componente precisa de um subconjunto.
+
+## Hooks
+
+- Não existe diretório `src/hooks/`. Hooks customizados são raros — quando
+  necessários, ficam co-located ao componente que consome (ou em `src/lib/`
+  se for puramente lógico, sem React).
+- Custom hook = nome começa com `use` em camelCase (`useScrollSpy`).
+
+## SCSS
+
+Stylesheets ficam em `src/styles/` (global) e co-located em
+`src/components/**/*.scss` (por componente).
+
+- **Apenas** `src/styles/globals.scss` é importado por `src/app/layout.tsx`.
+- Partials de componente (`site-header.scss`, `post-card.scss`, etc.) **nunca**
+  são importados pelo respectivo `.tsx`: são agregados via `@use` em
+  `src/styles/components/_index.scss`.
+- Pair kebab-case obrigatório: `site-header.tsx` ⇄ `site-header.scss`.
+- `@use`, nunca `@import`. Apelidar quando dois módulos colidem de namespace
+  (ex.: `@use 'tokens/layout' as layout-tokens;`).
+- Sem `@apply`.
+- Sem frameworks externos (Tailwind, Bootstrap Sass, etc.).
+
+### Tokens
+
+- Valores reutilizáveis são **CSS custom properties** em `:root`, declarados em
+  `src/styles/tokens/_*.scss`:
+  - `_colors.scss` — surfaces, text, accents, status.
+  - `_typography.scss` — `--mono`, `--sans`, `--fs-*`, `--lh-*`, `--track-*`.
+  - `_spacing.scss` — `--space-*` (escala) e aliases (`--space-shell-*`).
+  - `_layout.scss` — `--col`, `--header-tool-h`, `--icon-hit*`, `--tweaks-width`
+    (lista exemplificativa; podem existir mais `--*` no ficheiro).
+  - `_radii.scss`, `_motion.scss`, `_elevation.scss`, `_effects.scss`.
+- SCSS variables (`$bp-*`) só em `_breakpoints.scss` (uso interno em `@media`).
+- Sem magic numbers: novos valores reutilizáveis viram token.
+
+### Responsivo (mobile-first)
+
+- Base = viewport mais estreito. Escalar com `@include r.desktop { … }` do
+  mixin em `src/styles/mixins/_responsive.scss`, ou
+  `@media (min-width: bp.$bp-md) { … }` quando precisar de breakpoint diferente.
+- Breakpoints: `$bp-sm` (480), `$bp-md` (621), `$bp-lg` (960), `$bp-xl` (1280).
+- `$bp-md: 621px` preserva o corte legado mobile/desktop do projeto.
+
+```scss
+@use '../../styles/mixins/responsive' as r;
+
+.post-title {
+  font-size: var(--fs-title-sm);
+
+  @include r.desktop {
+    font-size: var(--fs-title);
+  }
+}
+```
+
+## Lint, format, commit
+
+- `yarn lint` (ESLint, `--max-warnings=0` no commit via lint-staged).
+- `yarn format` / `yarn format:check` (Prettier).
+- Commit messages: **Conventional Commits** (`feat`, `fix`, `chore`, `refactor`,
+  `docs`, `style`, `test`, `build`, `ci`, `perf`). Validado por `commitlint`.
+
+## O que **não** usar neste repo
+
+- CVA, `clsx`, `tailwind-merge`, `cn()`. Não introduzir sem decisão explícita.
+- Barrels (`index.ts`) em `src/components/*`.
+- Diretórios `src/hooks/`, `src/contexts/` — não existem; preferir co-location.
+- `@import` em SCSS (use `@use`).
+- Tailwind ou qualquer framework de classes utilitárias.

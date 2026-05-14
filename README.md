@@ -1,6 +1,6 @@
 # EDusik — notes & blog
 
-A small, fast personal site built with **Next.js** (App Router). Posts live as Markdown on disk with front matter; **pt-BR** and **English** URLs share one content tree, with on-demand translation when the viewer’s locale differs from how a note was written.
+A small, fast personal site built with **Next.js** (App Router). Posts live as Markdown on disk with front matter; **English** and **pt-BR** URLs share one content tree, with on-demand translation when the viewer’s locale differs from how a note was written.
 
 ---
 
@@ -9,7 +9,7 @@ A small, fast personal site built with **Next.js** (App Router). Posts live as M
 |                 |                                                                                                   |
 | --------------: | ------------------------------------------------------------------------------------------------- |
 |     **Content** | Markdown + [gray-matter](https://github.com/jonschlinkert/gray-matter) front matter, Git-friendly |
-|     **Locales** | `pt-BR` (default) and `en`; `/` redirects to `/{lang}` (cookie-backed preference where set)       |
+|     **Locales** | `en` (default) and `pt-BR`; `/` redirects to `/{lang}` (cookie-backed preference where set)       |
 | **Translation** | Optional OpenAI, or MyMemory fallback; results cached under `.translate-cache/`                   |
 |   **Discovery** | In-site search across titles and excerpts                                                         |
 |   **Reader UX** | GFM Markdown, wiki-style links between notes, tags from `#hashtags` and `[[links]]`               |
@@ -45,7 +45,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) — you’ll be redirected to `http://localhost:3000/pt-BR` unless a saved language applies.
+Open [http://localhost:3000](http://localhost:3000) — you’ll be redirected to `http://localhost:3000/en` unless a saved language applies.
 
 Production build:
 
@@ -59,7 +59,7 @@ npm start
 ## Writing posts
 
 1. Put a `.md` file in `content/<source-locale>/` (see **Environment** for `CONTENT_SOURCE_LOCALE`).
-2. The URL slug is the **filename without** `.md` (e.g. `keyboard.md` → `/pt-BR/post/keyboard`).
+2. The URL slug is the **filename without** `.md` (e.g. `keyboard.md` → `/en/post/keyboard` or `/pt-BR/post/keyboard` depending on locale).
 3. **Front matter** (YAML between `---` lines):
 
 ```yaml

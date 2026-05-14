@@ -12,7 +12,7 @@ Guidance for humans and assistants working **in this repository**: EDusik’s pe
 ## Repository context
 
 - **Stack:** Next.js 16, React 19, TypeScript (see `package.json`).
-- **Languages:** `pt-BR` (default) and `en`; `/` redirects to `/{lang}` (middleware).
+- **Languages:** `en` (default) and `pt-BR`; `/` redirects to `/{lang}` (middleware).
 - **Content:** Markdown under `content/<locale>/`; the URL slug is the filename without `.md`. Front matter (YAML) and examples — [README.md](README.md).
 - **Translation:** logic in `src/lib/translate.ts`; cache in `.translate-cache/` (gitignored). `OPENAI_*` optional; fallback documented in README.
 - **Typical touchpoints:** `src/app/` (routes under `[lang]/`), `src/components/`, `src/lib/` (e.g. `src/lib/content/load-posts.ts`, `src/lib/dictionary.ts`, `src/lib/translate.ts`).
