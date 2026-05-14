@@ -9,7 +9,7 @@ const eslintConfig = defineConfig([
     files: ["src/app/layout.tsx"],
     rules: { "@next/next/no-page-custom-font": "off" },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "legacy/**"]),
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
 ]);
 
 export default eslintConfig;
