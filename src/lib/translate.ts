@@ -3,7 +3,11 @@ import path from "node:path";
 import crypto from "node:crypto";
 import type { Locale } from "@/lib/locales";
 
-const CACHE_DIR = path.join(process.cwd(), ".translate-cache");
+const CACHE_DIR = process.env.VERCEL
+  ? "/tmp/.translate-cache"
+  : path.join(process.cwd(), ".translate-cache");
+
+const TRANSLATE_FETCH_TIMEOUT_MS = 8000;
 
 function mymemoryCode(loc: Locale): string {
   return loc === "pt-BR" ? "pt" : "en";
@@ -60,7 +64,14 @@ async function translateMyMemoryChunk(
   const toC = mymemoryCode(to);
   const langpair = `${fromC}|${toC}`;
   const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=${langpair}`;
-  const res = await fetch(url);
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), TRANSLATE_FETCH_TIMEOUT_MS);
+  let res: Response;
+  try {
+    res = await fetch(url, { signal: ctrl.signal });
+  } finally {
+    clearTimeout(timer);
+  }
   if (!res.ok) throw new Error(`MyMemory HTTP ${res.status}`);
   const data = (await res.json()) as {
     responseData?: { translatedText?: string };
@@ -109,24 +120,32 @@ async function translateWithOpenAI(
   if (!key) throw new Error("OPENAI_API_KEY missing");
   const target = to === "pt-BR" ? "Brazilian Portuguese" : "English";
   const source = from === "pt-BR" ? "Brazilian Portuguese" : "English";
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${key}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: process.env.OPENAI_TRANSLATE_MODEL ?? "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: `You translate text from ${source} to ${target}. Preserve Markdown structure, fenced code blocks, inline code, and links unchanged. Only translate human prose and image alt text if present. Return only the translated text, no preamble.`,
-        },
-        { role: "user", content: text },
-      ],
-      temperature: 0.2,
-    }),
-  });
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), TRANSLATE_FETCH_TIMEOUT_MS);
+  let res: Response;
+  try {
+    res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${key}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: process.env.OPENAI_TRANSLATE_MODEL ?? "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: `You translate text from ${source} to ${target}. Preserve Markdown structure, fenced code blocks, inline code, and links unchanged. Only translate human prose and image alt text if present. Return only the translated text, no preamble.`,
+          },
+          { role: "user", content: text },
+        ],
+        temperature: 0.2,
+      }),
+      signal: ctrl.signal,
+    });
+  } finally {
+    clearTimeout(timer);
+  }
   if (!res.ok) {
     const err = await res.text();
     throw new Error(`OpenAI translate failed: ${res.status} ${err}`);

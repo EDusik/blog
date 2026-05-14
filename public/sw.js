@@ -1,22 +1,6 @@
 const CACHE = "blog-offline-v1";
-const PRECACHE_URLS = ["/pt-BR", "/en"];
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    (async () => {
-      const cache = await caches.open(CACHE);
-      await Promise.all(
-        PRECACHE_URLS.map(async (path) => {
-          try {
-            const res = await fetch(path, { credentials: "same-origin" });
-            if (res.ok) await cache.put(path, res.clone());
-          } catch {
-            /* install pode rodar sem rede */
-          }
-        })
-      );
-    })()
-  );
+self.addEventListener("install", () => {
   self.skipWaiting();
 });
 
@@ -54,16 +38,8 @@ async function networkFirst(request, cache) {
     if (res.ok) await cache.put(request, res.clone());
     return res;
   } catch {
-    let hit = await cache.match(request);
+    const hit = await cache.match(request);
     if (hit) return hit;
-    hit = await cache.match(request.url);
-    if (hit) return hit;
-    if (request.mode === "navigate") {
-      for (const path of PRECACHE_URLS) {
-        hit = await cache.match(path);
-        if (hit) return hit;
-      }
-    }
     return Response.error();
   }
 }
