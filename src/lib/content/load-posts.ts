@@ -161,15 +161,49 @@ async function maybeTranslatePost(
   }
 }
 
+/** Title + excerpt only; body stays in `writtenLang` for tags/minutes (listings & search). */
+async function maybeTranslatePostSummary(
+  post: Post,
+  fmTags: string[],
+  from: Locale,
+  to: Locale
+): Promise<Post> {
+  if (from === to) return post;
+  try {
+    const [title, excerpt] = await Promise.all([
+      translateBetween(post.title, from, to),
+      translateBetween(post.excerpt, from, to),
+    ]);
+    const bodyMarkdown = post.bodyMarkdown;
+    return {
+      ...post,
+      title,
+      excerpt,
+      bodyMarkdown,
+      tags: mergePostTags(fmTags, bodyMarkdown),
+      minutes: deriveMinutes(bodyMarkdown, undefined),
+    };
+  } catch (e) {
+    console.warn(`[translate] post "${post.id}" summary (${from} → ${to}):`, e);
+    return post;
+  }
+}
+
 export const getPost = cache(
-  async (locale: Locale, id: string): Promise<Post | undefined> => {
+  async (
+    locale: Locale,
+    id: string,
+    forSearch = false
+  ): Promise<Post | undefined> => {
     const source = getContentSourceLocale();
     const filePath = path.join(process.cwd(), "content", source, `${id}.md`);
     const loaded = readPostFromPath(filePath, id, source);
     if (!loaded) return undefined;
 
     if (loaded.writtenLang !== locale) {
-      return maybeTranslatePost(loaded.post, loaded.fmTags, loaded.writtenLang, locale);
+      return forSearch
+        ? maybeTranslatePostSummary(loaded.post, loaded.fmTags, loaded.writtenLang, locale)
+        : maybeTranslatePost(loaded.post, loaded.fmTags, loaded.writtenLang, locale);
     }
     return loaded.post;
   }
@@ -186,9 +220,10 @@ export async function getAllPostIds(): Promise<string[]> {
   return ids.sort();
 }
 
-export const getPosts = cache(async (locale: Locale): Promise<Post[]> => {
+/** All posts with title/excerpt translated for `locale`; body kept in source language (no full-body translation). */
+export const getPostsForSearch = cache(async (locale: Locale): Promise<Post[]> => {
   const ids = await getAllPostIds();
-  const list = await Promise.all(ids.map((id) => getPost(locale, id)));
+  const list = await Promise.all(ids.map((id) => getPost(locale, id, true)));
   const posts = list.filter((p): p is Post => p != null);
   posts.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
   return posts;

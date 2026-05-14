@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { Feed } from "@/components/post/feed";
-import { getPosts } from "@/lib/content/load-posts";
+import { getPostsForSearch } from "@/lib/content/load-posts";
 import { getDictionary } from "@/lib/dictionary";
 import { isLocale, locales, type Locale } from "@/lib/locales";
 import { alternateLanguagesForHome, homePath, keywordsForHome } from "@/lib/seo";
@@ -23,7 +23,7 @@ export async function generateMetadata({
   const { lang: raw } = await params;
   if (!isLocale(raw)) return {};
   const lang = raw as Locale;
-  const posts = await getPosts(lang);
+  const posts = await getPostsForSearch(lang);
   const t = getDictionary(lang);
   const path = homePath(lang);
   const desc = `${t.ui.noteCount(posts.length)} · ${HOME_TAGLINE}`;
@@ -73,7 +73,7 @@ export default async function LangHomePage({
   const { lang: raw } = await params;
   if (!isLocale(raw)) notFound();
   const lang = raw as Locale;
-  const full = await getPosts(lang);
+  const full = await getPostsForSearch(lang);
   const posts: PostSummary[] = full.map(
     ({ id, date, minutes, tags, title, excerpt }) => ({
       id,

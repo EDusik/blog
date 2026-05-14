@@ -38,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   for (const id of ids) {
-    const post = await getPost(defaultLocale, id);
+    const post = await getPost(defaultLocale, id, true);
     if (!post) continue;
     entries.push({
       url: absoluteUrl(postPath(defaultLocale, id)),
