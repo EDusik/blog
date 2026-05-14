@@ -1,4 +1,5 @@
 import type { Dictionary } from "@/types";
+
 import type { Locale } from "./locales";
 
 function formatDate(iso: string): string {
@@ -56,8 +57,8 @@ const shared: Dictionary = {
 };
 
 const byLang: Record<Locale, Dictionary> = {
-  "pt-BR": shared,
   en: shared,
+  "pt-BR": shared,
 };
 
 export function getDictionary(lang: Locale): Dictionary {

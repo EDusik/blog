@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+
+import { usePostTitle } from "@/components/post/post-title-context";
 import { SearchIcon } from "@/components/ui/icons";
 import { SiteSearchModal } from "@/components/ui/site-search-modal";
-import type { Locale } from "@/lib/locales";
 import { setLangCookieClient } from "@/lib/lang-cookie";
+import type { Locale } from "@/lib/locales";
 import type { PostSummary } from "@/types";
-import { usePostTitle } from "@/components/post/post-title-context";
 
 type Props = {
   lang: Locale;
@@ -97,16 +98,6 @@ export function SiteHeader({
       <div className="header-tools">
         <div className="lang-toggle" role="group" aria-label={langLabel}>
           <Link
-            href={`/pt-BR${suffix}`}
-            className={lang === "pt-BR" ? "active" : ""}
-            onClick={() => setLangCookieClient("pt-BR")}
-            prefetch
-            aria-current={lang === "pt-BR" ? "page" : undefined}
-          >
-            PT
-          </Link>
-          <span className="sep" aria-hidden="true" />
-          <Link
             href={`/en${suffix}`}
             className={lang === "en" ? "active" : ""}
             onClick={() => setLangCookieClient("en")}
@@ -114,6 +105,16 @@ export function SiteHeader({
             aria-current={lang === "en" ? "page" : undefined}
           >
             EN
+          </Link>
+          <span className="sep" aria-hidden="true" />
+          <Link
+            href={`/pt-BR${suffix}`}
+            className={lang === "pt-BR" ? "active" : ""}
+            onClick={() => setLangCookieClient("pt-BR")}
+            prefetch
+            aria-current={lang === "pt-BR" ? "page" : undefined}
+          >
+            PT
           </Link>
         </div>
         <button

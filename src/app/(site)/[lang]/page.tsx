@@ -1,14 +1,19 @@
-import { Suspense } from "react";
-import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
+
 import { Feed } from "@/components/post/feed";
-import { getDictionary } from "@/lib/dictionary";
 import { getPosts } from "@/lib/content/load-posts";
-import { isLocale, type Locale } from "@/lib/locales";
+import { getDictionary } from "@/lib/dictionary";
+import { isLocale, locales, type Locale } from "@/lib/locales";
 import { alternateLanguagesForHome, homePath, keywordsForHome } from "@/lib/seo";
 import type { PostSummary } from "@/types";
 
 const HOME_TAGLINE = "Notes on code, tools, and habits";
+
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }));
+}
 
 export async function generateMetadata({
   params,
