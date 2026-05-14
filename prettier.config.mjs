@@ -1,0 +1,22 @@
+/** @type {import("prettier").Config} */
+const config = {
+  semi: true,
+  singleQuote: false,
+  trailingComma: "es5",
+  printWidth: 88,
+  tabWidth: 2,
+  useTabs: false,
+  bracketSpacing: true,
+  arrowParens: "always",
+  endOfLine: "lf",
+  overrides: [
+    {
+      files: "*.md",
+      options: {
+        proseWrap: "preserve",
+      },
+    },
+  ],
+};
+
+export default config;

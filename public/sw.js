@@ -13,9 +13,9 @@ self.addEventListener("install", (event) => {
           } catch {
             /* install pode rodar sem rede */
           }
-        }),
+        })
       );
-    })(),
+    })()
   );
   self.skipWaiting();
 });
@@ -25,10 +25,10 @@ self.addEventListener("activate", (event) => {
     (async () => {
       const keys = await caches.keys();
       await Promise.all(
-        keys.map((key) => (key === CACHE ? Promise.resolve() : caches.delete(key))),
+        keys.map((key) => (key === CACHE ? Promise.resolve() : caches.delete(key)))
       );
       await self.clients.claim();
-    })(),
+    })()
   );
 });
 
@@ -87,6 +87,6 @@ self.addEventListener("fetch", (event) => {
         return networkFirst(request, cache);
       }
       return fetch(request);
-    })(),
+    })()
   );
 });

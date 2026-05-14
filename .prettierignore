@@ -1,0 +1,19 @@
+.next
+out
+build
+node_modules
+coverage
+legacy
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+*.min.js
+*.min.css
+# Hand-formatted: aligned custom properties + compact rules
+src/app/globals.css
+# Markdown posts (wikilinks, deliberate spacing)
+content/
+# Long-form / agent docs (edited outside Prettier)
+README.md
+CLAUDE.md
+AGENTS.md
